@@ -1,7 +1,7 @@
 <template>
     <div class="header-search">
         <i class="iconfont iconsearch" @click.stop="click"></i>
-        <input ref="searchInput" :class="{'show':show}" v-model="searchValue" type="text" @click.stop="" @keyup.enter="search"/>
+        <input ref="searchInput" :placeholder="placeholder" :class="{'show':show}" v-model="searchValue" type="text" @click.stop="" @keyup.enter="search"/>
     </div>
 </template>
 
@@ -14,6 +14,11 @@
               show: false
           }
         },
+        computed:{
+            placeholder(){
+                return this.$route.path.includes('square')? "文章标题或摘要或作者" :"文章标题或摘要"
+            }
+        },  
         watch:{
             show(value) {
                 if (value) {
@@ -25,8 +30,12 @@
         },
         methods:{
             search(){
+                if(this.$route.path.includes('square')){
+                    this.$router.push({name:'squareSearch',params:{words:this.searchValue}});
+                } else {
+                    this.$router.push({name:'search',params:{words:this.searchValue}});
+                }
                 // console.log(this.searchValue)
-                this.$router.push({name:'search',params:{words:this.searchValue}});
                 this.close()
             },
             click(){
@@ -65,6 +74,8 @@
         &.show{
             width: 200px;
             margin-left: 10px;
+            font-size: 16px;
+            color: darkcyan;
         }
         &:focus{
             border-bottom: 1px solid #8fd0cc;

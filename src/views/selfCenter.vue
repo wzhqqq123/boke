@@ -1,6 +1,6 @@
 <template>
   <div id="seleCenter">
-    <div class="banner-img"></div>
+    <banner></banner>
     <div id="userInfoContain">
       <div class="headIcon">
         <div
@@ -13,15 +13,17 @@
         >更换头像</el-button
       >
       <div class="infoItem" v-for="item in userInfoConfig" :key="item.id">
-        <span :class="['icon', item.id]"></span>
-        <div class="title">{{ item.title }}</div>
-        <el-input
-          v-model="userInfo[item.id]"
-          placeholder="请输入内容"
-          :disabled="item.disabled"
-          :clearable="item.clearable"
-          :show-password="item.showPassword"
-        ></el-input>
+        <template>
+          <span :class="['icon', item.id]"></span>
+          <div class="title">{{ item.title }}</div>
+          <el-input
+            v-model="userInfo[item.id]"
+            placeholder="请输入内容"
+            :disabled="item.disabled"
+            :clearable="item.clearable"
+            :show-password="item.showPassword"
+          ></el-input>
+        </template>
       </div>
       <span class="changePwd" @click="dialogVisible = true">修改</span>
       <div class="confirmBtns infoItem">
@@ -31,14 +33,14 @@
     </div>
     <MyDialog
       :dialogVisible.sync="dialogVisible"
-      :config="{ title: '修改密码', width: '40%' }"
+      :config="{ title: '修改密码', width: '80%' }"
     >
       <div class="infoItem" v-for="item in changePwdObj" :key="item.id">
         <span :class="['icon', item.id]"></span>
         <div class="title">{{ item.title }}</div>
         <el-input
           v-model="item.value"
-          placeholder="请输入内容"
+          :placeholder="item.placeholder"
           clearable
           show-password
         ></el-input>
@@ -58,9 +60,10 @@
 </template>
 
 <script>
+import Banner from "@/components/banner.vue";
 export default {
   name: "seleCenter",
-  components: {},
+  components: { Banner },
   data() {
     return {
       userInfoConfig: [
@@ -106,16 +109,19 @@ export default {
           id: "oldPwd",
           title: "旧密码",
           value: "",
+          placeholder: "请输入旧密码",
         },
         {
           id: "newPwd",
           title: "新密码",
           value: "",
+          placeholder: "请输入新密码",
         },
         {
           id: "confirmNewPwd",
           title: "确认密码",
           value: "",
+          placeholder: "请确认新密码",
         },
       ],
     };
@@ -123,11 +129,18 @@ export default {
   created() {},
   computed: {
     userInfo() {
-      return this.$store.state.userInfo;
+      const user = this.$store.state.userInfo;
+      return {
+        username: user?.username || '',
+        realname: user?.realname || '',
+        email: user?.email || '',
+        password: user?.password || '',
+        phone: user?.phone || '',
+      };
     },
     headIconUrl() {
-      return this.$store.state.userInfo.headIcon
-        ? developUrl + this.$store.state.userInfo.headIcon
+      return this.$store.state.userInfo?.headIcon
+        ? developUrl + this.$store.state.userInfo?.headIcon
         : null;
     },
     updateAvatarurl() {
@@ -135,18 +148,10 @@ export default {
     },
   },
   methods: {
-    // getUserInfo() {
-    //   // 获取用户信息
-    //   this.$get("/getUserInfo", {
-    //     requestName: "getUserInfo",
-    //   }).then((res) => {
-    //     res.data.password = 123456;
-    //     this.userInfo = res.data;
-    //   });
-    // },
     updateUseInfo() {
       // 更新用户信息
       let { password, status, headIcon, ...params } = this.userInfo; // 剔除password属性
+      params.requestName = "updateUseInfo";
       this.$post("/updateUseInfo", params).then((res) => {
         this.$store.commit("SET_USER_INFO", res.data);
       });
@@ -162,6 +167,7 @@ export default {
       let param = {
         oldPwd: this.changePwdObj[0].value,
         newPwd: this.changePwdObj[1].value,
+        requestName: "updatePassword",
       };
       this.$post("/updatePassword", param).then((res) => {
         if (res.status) {
@@ -190,8 +196,8 @@ export default {
         },
       };
       this.$post(this.updateAvatarurl, formdata, config).then((res) => {
+        this.$store.commit("SET_HEAD_ICON", null);
         this.$store.commit("SET_HEAD_ICON", res.data);
-        // this.headIconUrl = developUrl + res.data;
       });
     },
     openFileDialog() {
@@ -209,22 +215,6 @@ export default {
   flex-direction: column;
   align-items: center;
 
-  .banner-img {
-    width: 80%;
-    height: 500px;
-    background-image: url(@/imgs/selfBgc.jpeg);
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
-    transition: all 0.2s linear;
-    overflow: hidden;
-
-    &:hover {
-      transform: scale(1.05, 1.05);
-      filter: contrast(130%);
-    }
-  }
-
   #userInfoContain {
     margin-top: 20px;
     position: relative;
@@ -232,10 +222,17 @@ export default {
     justify-content: center;
     flex-direction: column;
     align-items: center;
-    width: 600px;
+    width: 90%;
+    max-width: 600px;
     border-radius: 10px;
     box-sizing: border-box;
-    background-color: #704141f5;
+    background: linear-gradient(
+      to bottom left,
+      #ffe6b3,
+      #ffb366,
+      #ff8080,
+      #ff4d4d
+    );
     box-shadow: 0 7px 0 #044452;
     transition: all 0.5s;
     text-align: center;
@@ -289,7 +286,7 @@ export default {
     }
 
     .title {
-      width: 80px;
+      width: 70px;
       text-align: left;
     }
 

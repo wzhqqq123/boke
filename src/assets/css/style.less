@@ -169,6 +169,7 @@
     li {
       list-style-type: disc;
       margin: 8px 0 0 32px;
+      line-height: 1.3rem;
     }
   }
 
@@ -226,7 +227,6 @@
     font-family: Consolas, "Liberation Mono", Courier, monospace;
   }
 
-  code,
   tt {
     margin: 0 5px;
     padding: 2px;
@@ -239,11 +239,11 @@
 
   pre > code {
     margin: 0;
-    padding: 0;
+    padding: 1em;
     white-space: pre;
-    color: #333;
+    color: #abb2bf;
     border: none;
-    background: transparent;
+    background-color: #282c34;
   }
 
   pre {
@@ -255,11 +255,72 @@
     border-radius: 3px;
   }
 
-  pre code,
   pre tt {
     background-color: transparent;
     border: none;
   }
+
+  /* =============atom-one-dark===============*/
+  .hljs-comment,
+  .hljs-quote {
+    color: #5c6370;
+    font-style: italic;
+  }
+  .hljs-doctag,
+  .hljs-formula,
+  .hljs-keyword {
+    color: #c678dd;
+  }
+  .hljs-deletion,
+  .hljs-name,
+  .hljs-section,
+  .hljs-selector-tag,
+  .hljs-subst {
+    color: #e06c75;
+  }
+  .hljs-literal {
+    color: #56b6c2;
+  }
+  .hljs-addition,
+  .hljs-attribute,
+  .hljs-meta .hljs-string,
+  .hljs-regexp,
+  .hljs-string {
+    color: #98c379;
+  }
+  .hljs-attr,
+  .hljs-number,
+  .hljs-selector-attr,
+  .hljs-selector-class,
+  .hljs-selector-pseudo,
+  .hljs-template-variable,
+  .hljs-type,
+  .hljs-variable {
+    color: #d19a66!important;
+  }
+  .hljs-bullet,
+  .hljs-link,
+  .hljs-meta,
+  .hljs-selector-id,
+  .hljs-symbol, 
+  .hljs-title {
+    color: #61aeee!important;
+  }
+  .hljs-built_in,
+  .hljs-class .hljs-title,
+  .hljs-title.class_ {
+    color: #e6c07b;
+  }
+  .hljs-emphasis {
+    font-style: italic;
+  }
+  .hljs-strong {
+    font-weight: 700;
+  }
+  .hljs-link {
+    text-decoration: underline;
+  }
+  /* =============atom-one-dark===============*/
   /* QUOTES
   =============================================================================*/
 

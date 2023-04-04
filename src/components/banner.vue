@@ -1,6 +1,6 @@
 <template>
   <div id="banner" :class="{ 'home-banner': isHome }">
-    <div class="banner-img">
+    <div :class="['banner-img',imgClass]">
       <template v-if="isHome">
         <!--博主信息-->
         <div class="focusinfo">
@@ -40,7 +40,6 @@
     </div>
   </div>
 </template>
-
 <script>
 export default {
   name: "banner",
@@ -62,10 +61,14 @@ export default {
   },
   computed: {
     headIconUrl() {
-      return this.$store.state.userInfo.headIcon
-        ? developUrl + this.$store.state.userInfo.headIcon
+      return this.$store.state.userInfo?.headIcon
+        ? developUrl + this.$store.state.userInfo?.headIcon
         : null;
     },
+    imgClass(){
+      return `bannel${[Math.floor(Math.random() * 10) + 1]}`
+      35910
+    }
   },
   created() {
     this.getWebSiteInfo();
@@ -96,21 +99,52 @@ export default {
   .banner-img {
     width: inherit;
     height: inherit;
-    background-image: url(@/imgs/topBgc.jpg);
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
+    background-image: url("@/imgs/topBgc1.jpeg");
     transition: all 0.2s linear;
+    background-repeat: no-repeat;
+    background-size: cover;
     overflow: hidden;
     &:hover {
       transform: scale(1.1, 1.1);
       filter: contrast(130%);
     }
   }
+
+  .bannel1{
+    background-image: url("@/imgs/topBgc1.jpeg");
+  }
+  .bannel2{
+    background-image: url("@/imgs/topBgc2.jpeg");
+  }
+  .bannel3{
+    background-image: url("@/imgs/topBgc3.jpeg");
+  }
+  .bannel4{
+    background-image: url("@/imgs/topBgc4.jpeg");
+  }
+  .bannel5{
+    background-image: url("@/imgs/topBgc5.jpeg");
+  }
+  .bannel6{
+    background-image: url("@/imgs/topBgc6.jpeg");
+  }
+  .bannel7{
+    background-image: url("@/imgs/topBgc7.jpeg");
+  }
+  .bannel8{
+    background-image: url("@/imgs/topBgc8.jpeg");
+  }
+  .bannel9{
+    background-image: url("@/imgs/topBgc9.jpeg");
+  }
+  .bannel10{
+    background-image: url("@/imgs/topBgc10.jpeg");
+  }
+
   &.home-banner {
     height: 550px;
     .banner-img {
-      background-position: center center;
+      background-position: center;
       background-repeat: no-repeat;
       background-attachment: fixed;
       background-size: cover;

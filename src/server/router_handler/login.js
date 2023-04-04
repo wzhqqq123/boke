@@ -60,7 +60,7 @@ exports.login = (req, res) => {
         // 生成token所需数据需要剔除用户的密码属性
         const { id, ...user } = results[0];
         user.password = "*********";
-        user.headIcon = user.headIcon.replaceAll('\\', '/');
+        user.headIcon = user.headIcon?user.headIcon.replaceAll('\\', '/'):'';
         // 生成 Token 字符串
         const tokenStr = jwt.sign(user, config.jwtSecretKey, {
           expiresIn: '10h', // token 有效期为 10 个小时

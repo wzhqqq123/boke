@@ -10,12 +10,15 @@ const path = require('path');
 
 // 查询用户的处理函数
 exports.getUser = (req, res) => {
-  db.query(`select username,realname,email,phone from userinfo where username='${req.user.username}'`, (err, results) => {
+  const username = req.query.username || req.user.username;
+  db.query(`select * from userinfo where username='${username}'`, (err, results) => {
     if (err) return res.cc(err)
     if (results.length) { // 查到有对应的用户名和密码数据
-      let userObj = results[0];
+      let { id, ...user } = results[0];
+      user.password = "*********";
+      user.headIcon = user.headIcon ? user.headIcon.replaceAll('\\', '/') : '';
       res.cc('获取用户信息成功！', 200, {
-        data: userObj
+        data: user
       });
     } else {
       res.cc('获取用户信息失败！');
@@ -36,7 +39,7 @@ exports.updateUse = (req, res) => {
         if (results.length) { // 查更新后的用户信息
           const { id, ...user } = results[0];
           user.password = "*********";
-          user.headIcon = user.headIcon.replaceAll('\\', '/');
+          user.headIcon = user.headIcon?user.headIcon.replaceAll('\\', '/'):'';
           res.cc('更新用户信息成功！', 200, {
             data: user
           });
@@ -54,7 +57,6 @@ exports.updatePassword = (req, res) => {
     if (err) return res.cc(err)
     if (results.length) { // 查到有对应的用户名和密码数据
       const pwOk = bcryptjs.compareSync(body.oldPwd, results[0].password); // 通过bcryptjs.compareSync解密判断密码是否相同
-      console.log(pwOk, req.user)
       if (pwOk) {
         const updateSql = "update userinfo set password=? where username=?";
         db.query(updateSql, [bcryptjs.hashSync(body.newPwd, 10), req.user.username], (err, results) => {
@@ -75,37 +77,36 @@ exports.updatePassword = (req, res) => {
 // 更换头像处理函数
 exports.updateAvatar = (req, res) => {
   if (req.file) {
-    const targetPath = path.join(__dirname, `../source/${req.user.username}`);
+    const targetPath = path.join(__dirname, `../source/headIcon/${req.user.username}`);
     const isExist = fs.existsSync(targetPath); // 查看用户名的文件路径是否存在
     if (!isExist) {
       fs.mkdirSync(targetPath);
     } else {
       let files = fs.readdirSync(targetPath);
       files.forEach(file => {
-        if (/^headIcon.\s*/.test(file)) {
+        if (/^headIcon*/.test(file)) {
           fs.unlinkSync(targetPath + '/' + file)
         }
       })
     }
     const fileName = req.file.filename;
-    const sourceFile = path.join(__dirname, "../source/", fileName);
+    const sourceFile = path.join(__dirname, "../source/headIcon", fileName);
     const destPath = path.join(targetPath, fileName);
     fs.rename(sourceFile, destPath, function (err) {
       if (err) return res.cc(err)
       fs.stat(destPath, function (err, stats) {
-        if (err) return console.log(err.message)
+        if (err) return res.cc(err.message)
         // 保存头像文件路径到数据库
         const updateSql = "update userinfo set headIcon=? where username=?";
-        const headUrl = path.join(`/${req.user.username}`, fileName);
+        const headUrl = path.join("/headIcon", `/${req.user.username}`, fileName);
         db.query(updateSql, [headUrl, req.user.username], (err, results) => {
           if (err) return res.cc(err)
           if (results.affectedRows === 1) {
-            return res.cc('更新头像信息成功！', 200, {
+            return res.cc('头像更新同步成功！', 200, {
               data: headUrl.replaceAll('\\', '/')
             });
           }
         });
-        // console.log('stats: ' + JSON.stringify(stats));
       });
     });
   }
@@ -116,8 +117,8 @@ exports.getAvatar = (req, res) => {
   db.query(`select headIcon from userinfo where username='${req.user.username}'`, (err, results) => {
     if (err) return res.cc(err)
     if (results.length) { // 当前用户存储有头像文件
-      return res.cc('获取用户头像成功！', 200, {
-        data: results[0].headIcon.replaceAll('\\', '/')
+      return res.cc('', 200, {
+        data: results[0].headIcon ? results[0].headIcon.replaceAll('\\', '/') : ''
       })
     } else {
       res.cc('当前用户未设置头像！');

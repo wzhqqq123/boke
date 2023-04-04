@@ -4,10 +4,14 @@ const fs = require('fs');
 const path = require('path');
 // querystringify模块
 const qs = require("querystringify");
+const history = require('connect-history-api-fallback');
 // 导入cors模块解决跨域
 const cors = require("cors");
 const userRouter = require('./router/user'); // 导入路由对象
 const loginRouter = require('./router/login'); // 导入路由对象
+const blogRouter = require('./router/blog'); // 导入路由对象
+const commentRouter = require('./router/comment'); // 导入评论路由对象
+
 // 捕捉schema的验证失败错误
 const joi = require('joi');
 // 建立与mysql数据库的连接
@@ -24,6 +28,11 @@ app.use(cors()); // 注册cors解决跨域
 app.use(express.json());
 // 配置解析 application/x-www-form-urlencoded 格式数据的内置中间件
 app.use(express.urlencoded({ extended: false }));
+// app.use(express.static('dist')); 
+// app.use(history({
+//   verbose: true,
+//   index: '/'
+// }));
 
 
 // 全局中间件，封装res.send处理
@@ -42,9 +51,11 @@ app.use(function (req, res, next) {
 
 
 // 使用 .unless({ path: [/^\/api\//] }) 指定哪些接口不需要进行 Token 的身份认证
-app.use(expressJWT({ secret: config.jwtSecretKey }).unless({ path: [/^\/api\//, /headIcon./] }))
+app.use(expressJWT({ secret: config.jwtSecretKey }).unless({ path: [/^\/api\//, /^\/headIcon/, /^\/blog./] }))
 app.use('/api', loginRouter); // 挂载路由对象
 app.use(userRouter);
+app.use(blogRouter);
+app.use(commentRouter);
 app.use(express.static('./src/server/source')); // 托管source文件
 
 
@@ -71,7 +82,7 @@ const getDataMw = (req, res, next) => {
 // 定义错误中间件函数,用来捕获项目中的异常错误，防止项目崩溃
 app.use(function (err, req, res, next) {
   // 捕获身份认证失败的错误
-  if (err.name === 'UnauthorizedError') return res.cc('身份认证失败！')
+  if (err.name === 'UnauthorizedError') return res.cc('身份认证失败,请重新登录！')
   // 数据验证失败
   if (err instanceof joi.ValidationError) return res.cc(err)
   // 未知错误

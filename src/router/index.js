@@ -15,7 +15,7 @@ VueRouter.prototype.push = function push(location, onResolve, onReject) {
 Vue.use(VueRouter);
 
 const router = new VueRouter({
-  mode: "hash",
+  mode: "hash", //history
   routes: userRouter,
   // eslint-disable-next-line no-unused-vars
   scrollBehavior(to, from, savedPosition) {

@@ -40,8 +40,7 @@ exports.register_schema = {
     password,
     dbpassword,
     realname,
-    phone,
-    email
+    phone
   },
 }
 

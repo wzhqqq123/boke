@@ -76,8 +76,8 @@ _axios.interceptors.response.use(
         if (res.code != 200) {
             if (res.code != undefined) {
                 // 身份认证失败跳转登录页
-                if (res.message.includes('身份认证失败！')) {
-                    window.location.href = "/";
+                if (res.message.includes('身份认证失败')) {
+                    window.location.hash = "#/login"
                 }
                 Message({
                     dangerouslyUseHTMLString: true,
@@ -91,13 +91,14 @@ _axios.interceptors.response.use(
                 return res;
             }
         } else {
-            Message({
-                dangerouslyUseHTMLString: true,
-                message: res.message || "success",
-                type: "success",
-                duration: 1.5 * 1000,
-            });
-            // this._message(res.message,'success');
+            if (res.message) {
+                Message({
+                    dangerouslyUseHTMLString: true,
+                    message: res.message,
+                    type: "success",
+                    duration: 1.5 * 1000,
+                });
+            }
             return res.data || "";
         }
     },
@@ -159,7 +160,6 @@ _axios.interceptors.response.use(
 // 将axios 的 post 方法，绑定到 vue 实例上面的 $post
 Vue.prototype.$post = function (url, params) {
     return _axios.post(url, params)
-
 }
 // 将axios 的 get 方法，绑定到 vue 实例上面的 $get
 Vue.prototype.$get = function (url, params) {

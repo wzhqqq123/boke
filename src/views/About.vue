@@ -92,8 +92,9 @@ export default {
         email: this.email,
         message: this.message,
         time: parseTime(new Date()),
+        requestName: "addMessageLeave"
       };
-      this.$post("/addMessageLeave", params).then(res=>{
+      this.$post("/addMessageLeave",params).then(res=>{
       });
       console.log(params);
     },

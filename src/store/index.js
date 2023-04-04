@@ -5,7 +5,7 @@ import { fetchSocial, fetchSiteInfo } from '@/api'
 
 Vue.use(Vuex)
 // 略:后台获取系统运行时间
-const runAt = '1589878800000';
+const runAt = '1678167627460';
 let timer = null;
 const state = {
     loading: false,
@@ -13,6 +13,8 @@ const state = {
     socials: '',
     websiteInfo: '',
     userInfo: null, // 存储用户信息对象
+    scrollTop: 0, // 滑块距离浏览器顶部距离
+    bolgCateGory: [], // 博客分类
 }
 const mutations = {
     SET_LOADING: (state, v) => {
@@ -29,6 +31,12 @@ const mutations = {
     },
     SET_HEAD_ICON: (state, v) => {
         state.userInfo.headIcon = v;
+    },
+    SET_SCROLL_TOP: (state, v) => {
+        state.scrollTop = v;
+    },
+    SET_BOLG_CATEGORY: (state, v) => {
+        state.bolgCateGory = v;
     },
     GET_RUNTIME_INTERVAL: (state) => {
         if (!timer || !state.runTimeInterval) {

@@ -1,6 +1,8 @@
 <template>
   <div id="layout-body">
-    <router-view></router-view>
+    <!-- <keep-alive include="Home"> -->
+      <router-view></router-view>
+    <!-- </keep-alive> -->
     <back-top></back-top>
   </div>
 </template>

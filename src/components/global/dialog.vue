@@ -71,6 +71,7 @@ export default {
 .md-modal /deep/ .el-dialog {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   border-radius: 20px;
+  max-width: 600px;
   /* transform: translateX(-50%) translateY(-50%); */
 }
 
@@ -86,7 +87,16 @@ export default {
   border-radius: 0 0 18px 18px;
 }
 
-.md-modal /deep/ .el-input--suffix .el-input__inner{
+.md-modal /deep/ .el-input--suffix .el-input__inner {
   padding-right: 55px;
+}
+.dialogContent {
+  text-align: center;
+}
+
+@media (max-width: 800px) {
+  .md-modal /deep/ .el-dialog .el-dialog__body {
+    padding: 10px 0;
+  }
 }
 </style>

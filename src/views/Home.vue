@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <banner isHome="true"></banner>
-    <div class="site-content animate" v-if="1==0">
+    <div class="site-content animate">
       <!--通知栏-->
       <div class="notify">
         <div class="search-result" v-if="hideSlogan">
@@ -10,7 +10,6 @@
         </div>
         <quote v-else>{{ notice }}</quote>
       </div>
-
       <!--焦点图-->
       <div class="top-feature" v-if="!hideSlogan">
         <section-title>
@@ -27,11 +26,11 @@
       <!--文章列表-->
       <main class="site-main" :class="{ search: hideSlogan }">
         <section-title v-if="!hideSlogan">推荐</section-title>
-        <template v-for="item in postList">
+        <template v-for="item in blogList">
           <post :post="item" :key="item.id"></post>
         </template>
+        <Empty v-if="!blogList.length">博客数据为空，快去创建一个吧~</Empty>
       </main>
-
       <!--加载更多-->
       <div class="more" v-show="hasNextPage">
         <div class="more-btn" @click="loadMore">More</div>
@@ -42,6 +41,7 @@
 
 <script>
 import Banner from "@/components/banner.vue";
+import Empty from "@/components/empty.vue";
 import Feature from "@/components/feature.vue";
 import sectionTitle from "@/components/section-title.vue";
 import Post from "@/components/post.vue";
@@ -55,13 +55,15 @@ export default {
   data() {
     return {
       features: [],
-      postList: [],
+      blogList: [],
       currPage: 1,
       hasNextPage: false,
+      pageSize: 10,
     };
   },
   components: {
     Banner,
+    Empty,
     Feature,
     sectionTitle,
     Post,
@@ -82,6 +84,14 @@ export default {
       return this.$store.getters.notice;
     },
   },
+  watch: {
+    "$route.path"(to, from) {
+      this.currPage = 1;
+      this.hasNextPage = false;
+      this.blogList = [];
+      this.getBlogList();
+    },
+  },
   methods: {
     fetchFocus() {
       fetchFocus()
@@ -92,28 +102,56 @@ export default {
           console.log(err);
         });
     },
-    fetchList() {
-      fetchList()
-        .then((res) => {
-          this.postList = res.data.items || [];
-          this.currPage = res.data.page;
+    // 获取博客列表
+    getBlogList() {
+      let param = {
+        currPage: this.currPage,
+        size: this.pageSize,
+        searchWords: this.searchWords,
+        category: this.category,
+        requestName: "getBlogList"
+      };
+      this.$post("/getBlogList", param).then((res) => {
+        if (res.data) {
+          this.blogList = this.blogList.concat(res.data.list);
+          if (this.currPage === 1 && !this.features.length) {
+            // 第一页时获取数据的前3项作为聚焦展示
+            this.features =
+              res.data.list.slice(0, 3).map((item) => {
+                let obj = {};
+                obj.id = item.id;
+                obj.title = item.title;
+                obj.img = developUrl + item.banner.replaceAll(/\\/g, "/");
+                return obj;
+              }) || [];
+          }
+          this.currPage = res.data.currPage;
           this.hasNextPage = res.data.hasNextPage;
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    },
-    loadMore() {
-      fetchList({ page: this.currPage + 1 }).then((res) => {
-        this.postList = this.postList.concat(res.data.items || []);
-        this.currPage = res.data.page;
-        this.hasNextPage = res.data.hasNextPage;
+        }
       });
     },
+    // fetchList() {
+    //   fetchList()
+    //     .then((res) => {
+    //       this.blogList = res.data.items || [];
+    //       this.currPage = res.data.currPage;
+    //       this.hasNextPage = res.data.hasNextPage;
+    //     })
+    //     .catch((err) => {
+    //       console.log(err);
+    //     });
+    // },
+    loadMore() {
+      console.log(this.currPage);
+      this.currPage++;
+      this.getBlogList();
+    },
+  },
+  created() {
+    this.getBlogList();
   },
   mounted() {
-    this.fetchFocus();
-    this.fetchList();
+    // this.fetchFocus();
   },
 };
 </script>
@@ -156,7 +194,7 @@ export default {
 
 .site-main {
   padding-top: 80px;
-
+  text-align: left;
   &.search {
     padding-top: 0;
   }

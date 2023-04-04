@@ -45,7 +45,7 @@
             height: 160px;
             text-align: center;
             line-height: 160px;
-            background: #BBE2DB;
+            background: #3a8ee6;
             color: white;
             font-size: 16px;
             opacity: 0;

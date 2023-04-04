@@ -10,11 +10,11 @@ const storage = multer.diskStorage({
     // NodeJS的两个全局变量
     // console.log(__dirname);  //获取当前文件在服务器上的完整目录 
     // console.log(__filename); //获取当前文件在服务器上的完整路径 
-    cb(null, path.join(__dirname, '../source'))
+    cb(null, path.join(__dirname, '../source/headIcon'))
   },
   // 配置文件上传后存储的路径和文件名
   filename: function (req, file, cb) {
-    cb(null, 'headIcon' + path.extname(file.originalname))
+    cb(null, 'headIcon' + new Date().getTime() + path.extname(file.originalname))
   }
 })
 const upload = multer({ storage: storage })
@@ -29,7 +29,6 @@ const expressJoi = require('@escook/express-joi')
 const { update_password_schema } = require('../schema/user')
 const { messageLeave_schema } = require('../schema/user')
 
-messageLeave_schema
 // 获取用户信息
 router.get('/getUserInfo', userHandler.getUser)
 // 更新用户信息
@@ -44,4 +43,3 @@ router.get('/getAvatar', userHandler.getAvatar)
 router.post('/addMessageLeave', expressJoi(messageLeave_schema), userHandler.addMessageLeave)
 
 module.exports = router
-

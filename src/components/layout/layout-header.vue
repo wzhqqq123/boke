@@ -15,10 +15,10 @@
       class="site-menus"
       :class="{ mobileShow: mobileShow }"
       @click.stop="mobileShow = !mobileShow"
-    >
+    > 
       <div class="menu-item header-search"><header-search /></div>
       <div class="menu-item"><router-link to="/home">首页</router-link></div>
-      <div class="menu-item hasChild">
+      <div class="menu-item hasChild" v-if="!fromSquare">
         <a href="#">文章</a>
         <div class="childMenu" v-if="category.length">
           <div class="sub-menu" v-for="item in category" :key="item.title">
@@ -28,12 +28,14 @@
           </div>
         </div>
       </div>
-      <div class="menu-item"><router-link to="/about">关于</router-link></div>
+      <div class="menu-item" v-if="!fromSquare"><router-link to="/about">关于</router-link></div>
+      <div class="menu-item" ><router-link to="/square">广场</router-link></div>
       <div class="menu-item hasChild">
         <a href="#">我的</a>
         <div class="childMenu" v-if="my.length">
           <div class="sub-menu" v-for="item in my" :key="item.title">
-            <router-link :to="item.href">{{ item.title }}</router-link>
+            <span @click="toRouter(item.href)">{{ item.title }}</span>
+            <!-- <router-link :to="item.href" @click="toRouter(item.href)">{{ item.title }}</router-link> -->
           </div>
         </div>
       </div>
@@ -52,17 +54,33 @@ export default {
       lastScrollTop: 0,
       fixed: false,
       hidden: false,
-      category: [],
       my: [
-        { href: "/selfCenter", id: 1, title: "个人中心" },
-        { href: "/", id: 1, title: "退出登陆" },
+        { href: "/selfCenter", title: "个人中心" },
+        { href: "/createBlog", title: "博客创作" },
+        { href: "/login", title: "退出登陆" },
       ],
       mobileShow: false,
+      fromSquare:false, // 是否来自于广场路由
     };
   },
   mounted() {
     window.addEventListener("scroll", this.watchScroll);
-    this.fetchCategory();
+    // this.getCategory();
+    // this.fetchCategory();
+  },
+  computed:{
+    category(){
+      return this.$store.state.bolgCateGory || []
+    },
+  },
+  watch:{
+    "$route.path"(to, from) {
+      if(to.includes('square') || (!to.includes('home') && from.includes('square'))){
+        this.fromSquare = true;
+      } else {
+        this.fromSquare = false;
+      }
+    },
   },
   beforeDestroy() {
     window.removeEventListener("scroll", this.watchScroll);
@@ -76,6 +94,9 @@ export default {
       if (scrollTop === 0) {
         this.fixed = false;
         this.hidden = false;
+      } else if(scrollTop > 600){
+        this.fixed = false;
+        this.hidden = true;
       } else if (scrollTop >= this.lastScrollTop) {
         this.fixed = false;
         this.hidden = true;
@@ -84,6 +105,7 @@ export default {
         this.hidden = false;
       }
       this.lastScrollTop = scrollTop;
+      this.$store.commit("SET_SCROLL_TOP",scrollTop);
     },
     fetchCategory() {
       fetchCategory()
@@ -95,6 +117,13 @@ export default {
           console.log(err);
         });
     },
+    toRouter(href){
+      this.$router.push(href);
+      if(href === "/login"){
+        localStorage.removeItem("token");
+        this.$store.commit("SET_USER_INFO",null); // 清空用户信息
+      }
+    }
   },
 };
 </script>
@@ -103,7 +132,7 @@ export default {
 #layout-header {
   position: fixed;
   top: 0;
-  z-index: 9;
+  z-index: 99;
   width: 100%;
   height: 80px;
   padding: 0 80px;
@@ -217,6 +246,14 @@ export default {
         left: 25%;
         z-index: 99;
       }
+
+      span{
+        user-select: none;
+        cursor: pointer;
+        &:hover{
+          color:#ff6d6d;
+        }
+      }
     }
   }
 }
@@ -224,6 +261,21 @@ export default {
   #layout-header {
     padding: 0 20px;
   }
+
+  .site-menus .menu-item:last-of-type .childMenu{
+    right:0;
+
+    &::after{
+      left: auto;
+      right: 20px;
+    }
+
+    &::before{
+      left: auto;
+      right: 20px;
+    }
+  }
+
 }
 @media (max-width: 600px) {
   #layout-header {
@@ -275,6 +327,7 @@ export default {
     display: inline-block;
     visibility: visible;
     z-index: 99;
+    padding-bottom: 1em;
   }
 }
 </style>

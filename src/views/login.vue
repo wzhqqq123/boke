@@ -1,7 +1,7 @@
 <template>
   <div id="login">
     <div class="main">
-      <h1>博 客 登 录 页 面</h1>
+      <h1>Alan's Blog</h1>
       <div class="login-form">
         <h2>SignIn Form</h2>
         <div class="agileits-top">
@@ -27,6 +27,7 @@
                 name="Password"
                 required=""
                 v-model="password"
+                @keydown.enter="login"
               />
               <label>Password</label>
               <span></span>
@@ -40,7 +41,7 @@
               <ul>
                 <li>
                   <input type="checkbox" id="brand" value="" v-model="remember"/>
-                  <label for="brand"><span></span> Remember me ?</label>
+                  <label for="brand"><span></span> Remember me</label>
                 </li>
                 <li><a href="#" @click="toRegister">No account ?</a></li>
               </ul>
@@ -48,7 +49,7 @@
           </form>
         </div>
         <div class="agileits-bottom">
-          <input type="submit" value="Sign In" @click="login" />
+          <input type="submit" value="Sign In" @click="login"/>
         </div>
       </div>
     </div>
@@ -91,7 +92,7 @@ export default {
           localStorage.removeItem('wzhBokePassword');
         }
         this.$router.push({
-            path:'/index'
+            path:'/home'
         });
       });
     },
@@ -115,7 +116,7 @@ export default {
 
 <style lang="scss" scoped>
 #login {
-  background-image: url("@/imgs/banner.jpg");
+  background-image: url("@/imgs/login.jpeg");
   background-size: cover;
   position: absolute;
   width: 100%;
@@ -271,6 +272,7 @@ h2 {
 .wthree-text ul {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 .wthree-text ul li {
   display: inline-flex;
@@ -497,8 +499,9 @@ h2 {
     border-top: 11px solid transparent;
   }
   .wthree-text input[type="checkbox"]:checked + label span:first-child:before {
-    left: 1px;
-    top: 1px;
+    left: -1px;
+    top: -1px;
+    transform: scale(0.8);
   }
 }
 @media (max-width: 414px) {
@@ -548,9 +551,9 @@ h2 {
   .wthree-text ul li {
     display: block;
   }
-  .wthree-text ul li:nth-child(2) {
-    margin-top: 1em;
-  }
+  // .wthree-text ul li:nth-child(2) {
+  //   margin-top: 1em;
+  // }
   .wthree-text {
     margin-top: 1.5em;
   }

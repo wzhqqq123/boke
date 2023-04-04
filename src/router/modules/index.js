@@ -7,7 +7,7 @@ const routes = [
   {
     path: "/",
     redirect: () => {
-      return "/login";
+      return "/home";
     }, //动态重定向到项目的首页
   },
   {
@@ -27,7 +27,7 @@ const routes = [
     name: "index",
     component: () => import("@/views/index.vue"),
     meta: { title: '首页' },
-    children:[
+    children: [
       {
         path: '',
         component: () => import('@/views/Home.vue'),
@@ -35,6 +35,7 @@ const routes = [
       },
       {
         path: '/home',
+        name: 'home',
         component: () => import('@/views/Home.vue'),
         meta: { title: '首页' }
       },
@@ -57,6 +58,18 @@ const routes = [
         meta: { title: '关于' }
       },
       {
+        path: '/square',
+        name: 'square',
+        component: () => import('@/views/square.vue'),
+        meta: { title: '广场' }
+      },
+      {
+        path: '/squareSearch/:words',
+        name: 'squareSearch',
+        component: () => import('@/views/square.vue'),
+        meta: { title: '广场搜索', params: 'words' }
+      },
+      {
         path: '/article/:id',
         name: 'article',
         component: () => import('@/views/Articles.vue'),
@@ -67,8 +80,25 @@ const routes = [
         name: 'selfCenter',
         component: () => import('@/views/selfCenter.vue'),
         meta: { title: '个人中心' }
+      },
+      {
+        path: '/createBlog',
+        name: 'createBlog',
+        component: () => import('@/views/createBlog.vue'),
+        meta: { title: '博客创作' }
+      },
+      {
+        path: '/editBlog/:id',
+        name: 'editBlog',
+        component: () => import('@/views/createBlog.vue'),
+        meta: { title: '博客编辑' }
+      },
+      {
+        path: '/manager',
+        name: 'manager',
+        component: () => import('@/views/manager.vue'),
+        meta: { title: '后台管理' }
       }
-      
     ]
   },
 ]

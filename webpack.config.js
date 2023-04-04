@@ -83,7 +83,7 @@ module.exports = {
     new CleanWebpackPlugin(),
     new VueLoaderPlugin(),
     new HtmlWebpackPlugin({
-      title: "webpack打包实例",
+      title: "博客",
       template: path.resolve(__dirname, "./public/index.html"), // 指定源文件路径
       filename: "./index.html", // 指定生成文件的存放路径
       url: path.join(__dirname, "./dist/public/")
@@ -102,8 +102,8 @@ module.exports = {
     //   ]
     // }),
     new webpack.DefinePlugin({ // 「生产/开发」构建中使用不同的服务 URL
-      "developUrl": JSON.stringify("http://127.0.0.1:8080"),
-      "productUrl": JSON.stringify("http://127.0.0.1:8080"),
+      "developUrl": JSON.stringify("http://10.100.53.253:8080"),
+      "productUrl": JSON.stringify("http://10.100.53.253:8080"),
       "process.env": {
         NODE_ENV: process.env.NODE_ENV // 将属性转化为全局变量，让代码中可以正常访问
       }
@@ -117,7 +117,9 @@ module.exports = {
     historyApiFallback: true, // 当我们搭建spa应用时非常有用，它使用的是HTML5 History Api，任意的跳转或404响应可以指向 index.html页面；
     hot: true, // 模块热更新
     compress: true, // 进行gzip压缩
-    port: "8888",
+    host: '10.100.53.253',
+    disableHostCheck: true,
+    port: 8888,
     writeToDisk: true, // 每次运行不清空dist
     open: true
   }

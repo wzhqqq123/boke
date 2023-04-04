@@ -1,7 +1,6 @@
 <template>
   <div id="register">
     <div class="main">
-      <h1>注 册 页 面</h1>
       <div class="register-form">
         <h2>Register Form</h2>
         <div class="agileits-top">
@@ -33,6 +32,9 @@
         <div class="agileits-bottom">
           <input type="submit" value="Register" @click="register" />
         </div>
+        <div class="agileits-bottom">
+          <input type="submit" value="Back" @click="backLogin" />
+        </div>
       </div>
     </div>
   </div>
@@ -52,6 +54,13 @@ export default {
           type: "text",
         },
         {
+          id: "realname",
+          title: "Real Name",
+          value: null,
+          required: true,
+          type: "text",
+        },
+        {
           id: "password",
           title: "Password",
           value: null,
@@ -64,13 +73,6 @@ export default {
           value: null,
           required: true,
           type: "password",
-        },
-        {
-          id: "realname",
-          title: "Real Name",
-          value: null,
-          required: true,
-          type: "text",
         },
         {
           id: "email",
@@ -104,6 +106,11 @@ export default {
         });
       });
     },
+    backLogin(){
+      this.$router.push({
+        path: "/login",
+      });
+    }
   },
 };
 </script>
@@ -285,6 +292,9 @@ h2 {
 }
 .agileits-bottom {
   position: relative;
+}
+.agileits-bottom:last-of-type{
+  margin-top: 1em;
 }
 .agileits-bottom:before {
   content: "";

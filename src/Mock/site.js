@@ -12,7 +12,7 @@ export default [
                     slogan: '日拱一卒 功不唐捐',
                     name: 'WZH′blog',
                     domain: 'https://www.wangzhihao.cn',
-                    notice: '本博客的Demo数据由Mockjs生成',
+                    notice: 'Behind each strenuously, there will be a double reward.',
                     desc: '一个It技术的探索者'
                 }
             }
@@ -38,7 +38,7 @@ export default [
                         title: 'Gitee',
                         icon: 'icongitee',
                         color: '#d81e06',
-                        href: 'https://gitee.com/fengziy'
+                        href: 'https://gitee.com/wang_zhi_hao/boke/tree/develop/'
                     },
                     {
                         id: 3,
